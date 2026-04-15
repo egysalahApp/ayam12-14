@@ -923,7 +923,7 @@
                 </div>`;
             },
 
-            // --- دالة عرض قسم المطابقة والتوصيل (Matching) - المعدلة للارتفاع الديناميكي ---
+            // --- دالة عرض قسم المطابقة والتوصيل (Matching) - المعدلة للارتفاع الديناميكي وإعادة الترتيب ---
             renderMatching(sectionData) {
                 const sectionId = sectionData.id;
                 const theme = sectionData.theme;
@@ -962,7 +962,8 @@
                             let rBtnClass = `w-full h-full p-3 md:p-4 rounded-xl border-2 font-bold text-center transition-all duration-300 text-sm md:text-lg flex items-center justify-center min-h-[4.5rem] md:min-h-[5rem] `;
                             
                             if (isMatchedR) {
-                                rBtnClass += `bg-slate-50 border-slate-200 text-slate-400 opacity-40 cursor-default scale-95`;
+                                // اللون الأخضر الهادئ للدلالة على المطابقة الصحيحة وإبقاء البطاقة
+                                rBtnClass += `bg-emerald-50 border-emerald-200 text-emerald-600 opacity-80 cursor-default`;
                             } else if (isSelectedR) {
                                 rBtnClass += `bg-${theme}-100 border-${theme}-500 text-${theme}-800 shadow-md ring-2 ring-${theme}-200 ring-offset-1`;
                             } else {
@@ -981,7 +982,8 @@
                             let lBtnClass = `w-full h-full p-3 md:p-4 rounded-xl border-2 font-bold text-center transition-all duration-300 text-sm md:text-lg flex items-center justify-center min-h-[4.5rem] md:min-h-[5rem] `;
                             
                             if (isMatchedL) {
-                                lBtnClass += `bg-slate-50 border-slate-200 text-slate-400 opacity-40 cursor-default scale-95`;
+                                // اللون الأخضر الهادئ للدلالة على المطابقة الصحيحة وإبقاء البطاقة
+                                lBtnClass += `bg-emerald-50 border-emerald-200 text-emerald-600 opacity-80 cursor-default`;
                             } else if (isSelectedL) {
                                 lBtnClass += `bg-emerald-100 border-emerald-500 text-emerald-800 shadow-md ring-2 ring-emerald-200 ring-offset-1`;
                             } else {
@@ -1540,6 +1542,7 @@
                 q.paragraph.forEach((segment) => {
                     const isSelected = selectedTargets.includes(segment.id);
                     const isShaking = shakeWordId === segment.id;
+
                     let segClass = "inline leading-loose px-1.5 py-0.5 rounded transition-all duration-300 text-2xl md:text-3xl select-none ";
 
                     if (!answered) {
@@ -1794,11 +1797,22 @@
                 if (state.selectedRight && state.selectedLeft) {
                     if (state.selectedRight === state.selectedLeft) {
                         // Match
-                        state.matchedPairs.push(state.selectedRight);
+                        const matchedId = state.selectedRight;
+                        state.matchedPairs.push(matchedId);
                         state.selectedRight = null;
                         state.selectedLeft = null;
                         this.state.progress[sectionId].answered++;
                         this.state.progress[sectionId].score++; 
+
+                        // ترتيب الصناديق: نقل البطاقتين المتطابقتين إلى الأسفل
+                        const rIdx = state.rightItems.findIndex(i => i.id === matchedId);
+                        const lIdx = state.leftItems.findIndex(i => i.id === matchedId);
+                        if (rIdx > -1 && lIdx > -1) {
+                            const rItem = state.rightItems.splice(rIdx, 1)[0];
+                            const lItem = state.leftItems.splice(lIdx, 1)[0];
+                            state.rightItems.push(rItem);
+                            state.leftItems.push(lItem);
+                        }
                         
                         this.updateUI();
                         this.updateTabs();
