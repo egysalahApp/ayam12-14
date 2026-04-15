@@ -393,14 +393,14 @@
                             text: "كان الخياط يؤمن بأن العلم الحقيقي هو علم الكتب.",
                             words: ["كان", "الخياط", "يؤمن", "بأن", "العلم", "الحقيقي", "هو", "علم", "الكتب."],
                             errorWordIndex: 8,
-                            options: ["اللدني", "الأزهر", "الفقه"],
+                            options: ["لدنيّ", "الأزهر", "الفقه"],
                             correctOptionIndex: 0,
                             hint: "العلم الذي يُلهمه الله لعباده الصالحين.",
                             explanation: "كان الخياط يزدري الكتب، ويؤمن إيمانًا قاطعًا بـ (العلم اللدني) الرباني."
                         },
                         {
-                            text: "كان إمام المسجد يتصف بالقسوة والغلظة والجحود.",
-                            words: ["كان", "إمام", "المسجد", "يتصف", "بالقسوة", "والغلظة", "والجحود."],
+                            text: "كان إمام المسجد يتصف بالقسوة.",
+                            words: ["كان", "إمام", "المسجد", "يتصف", "بالقسوة."],
                             errorWordIndex: 4,
                             options: ["بالتقوى", "بالذكاء", "بالفصاحة"],
                             correctOptionIndex: 0,
@@ -923,89 +923,114 @@
                 </div>`;
             },
 
-            // --- دالة عرض قسم المطابقة والتوصيل (Matching) - المعدلة للارتفاع الديناميكي وإعادة الترتيب ---
+            // --- دالة العرض الرئيسية لقسم المطابقة والتوصيل ---
             renderMatching(sectionData) {
+                let html = `<div class="fade-in" id="${sectionData.id}-matching-wrapper">`;
+                if (sectionData.description) { html += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 bg-opacity-60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
+
+                html += `<div id="${sectionData.id}-matching-container">`;
+                html += this.renderMatchingInner(sectionData);
+                html += `</div>`;
+
+                html += `<div id="section-result-area-${sectionData.id}">`;
+                const progress = this.state.progress[sectionData.id];
+                const isComplete = progress.answered === progress.total;
+                if (isComplete) { 
+                    html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${sectionData.theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; 
+                }
+                html += '</div>';
+                html += `<div id="section-footer-area-${sectionData.id}" class="w-full">` + this.renderSectionFooterControls(sectionData.id, isComplete) + `</div></div>`;
+                return html;
+            },
+
+            // --- الدالة المسؤولة عن التحديث الجزئي بدون رعشة ---
+            renderMatchingInner(sectionData) {
                 const sectionId = sectionData.id;
                 const theme = sectionData.theme;
                 const state = this.state.sectionData[sectionId];
                 const progress = this.state.progress[sectionId];
                 const isComplete = progress.answered === progress.total;
 
-                let html = '<div class="fade-in">';
-                if (sectionData.description) { html += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 bg-opacity-60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
+                let html = `<div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200 mb-8 relative transition-all duration-300 ${state.wrongAttempt ? 'shake ring-2 ring-rose-400' : ''}">`;
+                html += `<div class="flex justify-between items-center mb-6 px-4 bg-slate-50 py-3 rounded-xl border border-slate-100">`;
+                html += `<span class="text-${theme}-600 font-bold text-lg md:text-xl">اربط بين كل بطاقتين</span>`;
+                html += `<span class="font-bold text-slate-500 bg-white px-4 py-1.5 rounded-full border border-slate-200 text-sm md:text-base tracking-wider">المطابقة: ${toArabicNum(progress.answered)} / ${toArabicNum(progress.total)}</span>`;
+                html += `</div>`;
+                
+                html += `<div class="relative w-full z-10">`;
+                
+                // خط فاصل زخرفي
+                html += `<div class="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 -translate-x-1/2 hidden md:block"></div>`;
 
-                if (!isComplete) {
-                    html += `<div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200 mb-8 relative transition-all duration-300 ${state.wrongAttempt ? 'shake' : ''}">`;
-                    html += `<div class="flex justify-between items-center mb-6 px-4 bg-slate-50 py-3 rounded-xl border border-slate-100">`;
-                    html += `<span class="text-${theme}-600 font-bold text-lg md:text-xl">اربط بين كل بطاقتين</span>`;
-                    html += `<span class="font-bold text-slate-500 bg-white px-4 py-1.5 rounded-full border border-slate-200 text-sm md:text-base tracking-wider">المطابقة: ${toArabicNum(progress.answered)} / ${toArabicNum(progress.total)}</span>`;
-                    html += `</div>`;
-                    
-                    html += `<div class="relative w-full z-10">`;
-                    
-                    // خط فاصل زخرفي
-                    html += `<div class="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 -translate-x-1/2 hidden md:block"></div>`;
+                // شبكة عرض (Grid) لضمان تطابق الارتفاعات صفاً بصف
+                html += `<div class="grid grid-cols-2 gap-x-3 md:gap-x-8 gap-y-3 w-full relative z-10">`;
 
-                    // شبكة عرض (Grid) لضمان تطابق الارتفاعات صفاً بصف
-                    html += `<div class="grid grid-cols-2 gap-x-3 md:gap-x-8 gap-y-3 w-full relative z-10">`;
+                const maxLength = Math.max(state.rightItems.length, state.leftItems.length);
+                
+                for (let i = 0; i < maxLength; i++) {
+                    const rightItem = state.rightItems[i];
+                    const leftItem = state.leftItems[i];
 
-                    const maxLength = Math.max(state.rightItems.length, state.leftItems.length);
-                    
-                    for (let i = 0; i < maxLength; i++) {
-                        const rightItem = state.rightItems[i];
-                        const leftItem = state.leftItems[i];
-
-                        // زر العمود الأيمن
-                        if (rightItem) {
-                            const isMatchedR = state.matchedPairs.includes(rightItem.id);
-                            const isSelectedR = state.selectedRight === rightItem.id;
-                            let rBtnClass = `w-full h-full p-3 md:p-4 rounded-xl border-2 font-bold text-center transition-all duration-300 text-sm md:text-lg flex items-center justify-center min-h-[4.5rem] md:min-h-[5rem] `;
-                            
-                            if (isMatchedR) {
-                                // اللون الأخضر الهادئ للدلالة على المطابقة الصحيحة وإبقاء البطاقة
-                                rBtnClass += `bg-emerald-50 border-emerald-200 text-emerald-600 opacity-80 cursor-default`;
-                            } else if (isSelectedR) {
-                                rBtnClass += `bg-${theme}-100 border-${theme}-500 text-${theme}-800 shadow-md ring-2 ring-${theme}-200 ring-offset-1`;
-                            } else {
-                                rBtnClass += `bg-white border-slate-200 text-slate-700 md:hover:bg-${theme}-50 md:hover:border-${theme}-300 cursor-pointer active:scale-95 shadow-sm`;
-                            }
-
-                            html += `<button ${isMatchedR ? 'disabled' : ''} onclick="App.handleMatchingClick('${sectionId}', 'right', '${rightItem.id}')" class="${rBtnClass}">${rightItem.text}</button>`;
+                    // زر العمود الأيمن
+                    if (rightItem) {
+                        const isMatchedR = state.matchedPairs.includes(rightItem.id);
+                        const isSelectedR = state.selectedRight === rightItem.id;
+                        let rBtnClass = `w-full h-full p-3 md:p-4 rounded-xl border-2 font-bold text-center transition-all duration-300 text-sm md:text-lg flex items-center justify-center min-h-[4.5rem] md:min-h-[5rem] `;
+                        
+                        if (isMatchedR) {
+                            // اللون الأخضر الهادئ للدلالة على المطابقة الصحيحة وإبقاء البطاقة
+                            rBtnClass += `bg-emerald-50 border-emerald-200 text-emerald-700 opacity-90 cursor-default shadow-sm`;
+                        } else if (isSelectedR) {
+                            rBtnClass += `bg-${theme}-100 border-${theme}-500 text-${theme}-800 shadow-md ring-2 ring-${theme}-200 ring-offset-1`;
+                        } else if (state.wrongAttempt && state.selectedRight === rightItem.id) {
+                            rBtnClass += `bg-rose-100 border-rose-500 text-rose-800 shadow-md`;
                         } else {
-                            html += `<div></div>`;
+                            rBtnClass += `bg-white border-slate-200 text-slate-700 md:hover:bg-${theme}-50 md:hover:border-${theme}-300 cursor-pointer active:scale-95 shadow-sm`;
                         }
 
-                        // زر العمود الأيسر
-                        if (leftItem) {
-                            const isMatchedL = state.matchedPairs.includes(leftItem.id);
-                            const isSelectedL = state.selectedLeft === leftItem.id;
-                            let lBtnClass = `w-full h-full p-3 md:p-4 rounded-xl border-2 font-bold text-center transition-all duration-300 text-sm md:text-lg flex items-center justify-center min-h-[4.5rem] md:min-h-[5rem] `;
-                            
-                            if (isMatchedL) {
-                                // اللون الأخضر الهادئ للدلالة على المطابقة الصحيحة وإبقاء البطاقة
-                                lBtnClass += `bg-emerald-50 border-emerald-200 text-emerald-600 opacity-80 cursor-default`;
-                            } else if (isSelectedL) {
-                                lBtnClass += `bg-emerald-100 border-emerald-500 text-emerald-800 shadow-md ring-2 ring-emerald-200 ring-offset-1`;
-                            } else {
-                                lBtnClass += `bg-white border-slate-200 text-slate-700 md:hover:bg-emerald-50 md:hover:border-emerald-300 cursor-pointer active:scale-95 shadow-sm`;
-                            }
-
-                            html += `<button ${isMatchedL ? 'disabled' : ''} onclick="App.handleMatchingClick('${sectionId}', 'left', '${leftItem.id}')" class="${lBtnClass}">${leftItem.text}</button>`;
-                        } else {
-                            html += `<div></div>`;
-                        }
+                        html += `<button ${isMatchedR ? 'disabled' : ''} onclick="App.handleMatchingClick('${sectionId}', 'right', '${rightItem.id}')" class="${rBtnClass}">${rightItem.text}</button>`;
+                    } else {
+                        html += `<div></div>`;
                     }
 
-                    html += `</div></div></div>`; // إغلاق الشبكة والحاويات
-                } else {
-                    html += `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 fade-in py-10 bg-white border-2 border-emerald-200 w-full max-w-lg mx-auto rounded-3xl shadow-lg"><span class="text-6xl">🏆</span><span>اكتملت المطابقة بنجاح!</span></div>`;
+                    // زر العمود الأيسر
+                    if (leftItem) {
+                        const isMatchedL = state.matchedPairs.includes(leftItem.id);
+                        const isSelectedL = state.selectedLeft === leftItem.id;
+                        let lBtnClass = `w-full h-full p-3 md:p-4 rounded-xl border-2 font-bold text-center transition-all duration-300 text-sm md:text-lg flex items-center justify-center min-h-[4.5rem] md:min-h-[5rem] `;
+                        
+                        if (isMatchedL) {
+                            // اللون الأخضر الهادئ للدلالة على المطابقة الصحيحة وإبقاء البطاقة
+                            lBtnClass += `bg-emerald-50 border-emerald-200 text-emerald-700 opacity-90 cursor-default shadow-sm`;
+                        } else if (isSelectedL) {
+                            lBtnClass += `bg-${theme}-100 border-${theme}-500 text-${theme}-800 shadow-md ring-2 ring-${theme}-200 ring-offset-1`;
+                        } else if (state.wrongAttempt && state.selectedLeft === leftItem.id) {
+                            lBtnClass += `bg-rose-100 border-rose-500 text-rose-800 shadow-md`;
+                        } else {
+                            lBtnClass += `bg-white border-slate-200 text-slate-700 md:hover:bg-emerald-50 md:hover:border-emerald-300 cursor-pointer active:scale-95 shadow-sm`;
+                        }
+
+                        html += `<button ${isMatchedL ? 'disabled' : ''} onclick="App.handleMatchingClick('${sectionId}', 'left', '${leftItem.id}')" class="${lBtnClass}">${leftItem.text}</button>`;
+                    } else {
+                        html += `<div></div>`;
+                    }
                 }
 
-                html += `<div id="section-result-area-${sectionId}">`;
-                if (isComplete) { html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
-                html += '</div>';
-                html += `<div id="section-footer-area-${sectionId}" class="w-full">` + this.renderSectionFooterControls(sectionId, isComplete) + `</div></div>`;
+                html += `</div></div></div>`; // إغلاق الشبكة والحاويات
+
+                if (isComplete) {
+                    html += `<div class="text-2xl md:text-3xl font-bold text-emerald-600 flex flex-col items-center gap-3 fade-in py-6 bg-emerald-50 border-2 border-emerald-200 w-full max-w-lg mx-auto rounded-3xl shadow-sm mt-4"><span class="text-5xl">🏆</span><span>اكتملت المطابقة بنجاح!</span></div>`;
+                }
+
                 return html;
+            },
+
+            updateMatchingPartial(sectionId) {
+                const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
+                const container = document.getElementById(`${sectionId}-matching-container`);
+                if (container) {
+                    container.innerHTML = this.renderMatchingInner(sectionDef);
+                }
             },
 
             renderErrorCorrection(sectionData) {
@@ -1017,7 +1042,7 @@
                 html += `<div id="section-result-area-${sectionId}">`;
                 if (isComplete) { html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${sectionData.theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
                 html += '</div></div>'; 
-                html += `<div id="section-footer-area-${sectionId}" class="w-full">`;
+                html += `<div id="section-footer-area-${sectionId} class="w-full">`;
                 html += this.renderSectionFooterControls(sectionId, isComplete); 
                 html += `</div>`; 
                 return html;
@@ -1298,6 +1323,7 @@
                 this.updateUI();
                 this.scrollChatToBottom(sectionId);
 
+                // تغيير مدة الانتظار إلى 3 ثوانٍ
                 setTimeout(() => {
                     if (isCorrect) {
                         if (state.mistakesInCurrent === 0) this.state.progress[sectionId].score++;
@@ -1313,7 +1339,7 @@
                                 state.status = 'waiting_answer';
                                 this.updateUI();
                                 this.scrollChatToBottom(sectionId);
-                            }, 800);
+                            }, 3000); // 3 ثوانٍ بدلاً من 800 مللي ثانية
                         } else {
                             setTimeout(() => {
                                 state.history.push({ role: 'teacher', text: "لقد أنهينا المحادثة بنجاح! أحسنت 🌟" });
@@ -1321,7 +1347,7 @@
                                 this.updateUI();
                                 this.scrollChatToBottom(sectionId);
                                 this.checkFinalEvaluation();
-                            }, 800);
+                            }, 3000); // 3 ثوانٍ بدلاً من 800 مللي ثانية
                         }
                     } else {
                         state.mistakesInCurrent++;
@@ -1330,7 +1356,7 @@
                     }
                     this.updateUI();
                     this.scrollChatToBottom(sectionId);
-                }, 800);
+                }, 3000); // 3 ثوانٍ بدلاً من 800 مللي ثانية
             },
             
             scrollChatToBottom(sectionId) {
@@ -1814,7 +1840,7 @@
                             state.leftItems.push(lItem);
                         }
                         
-                        this.updateUI();
+                        this.updateMatchingPartial(sectionId);
                         this.updateTabs();
                         
                         if (this.state.progress[sectionId].answered === this.state.progress[sectionId].total) {
@@ -1825,16 +1851,16 @@
                     } else {
                         // Wrong
                         state.wrongAttempt = true;
-                        this.updateUI();
+                        this.updateMatchingPartial(sectionId);
                         setTimeout(() => {
                             state.selectedRight = null;
                             state.selectedLeft = null;
                             state.wrongAttempt = false;
-                            this.updateUI();
+                            this.updateMatchingPartial(sectionId);
                         }, 600);
                     }
                 } else {
-                    this.updateUI();
+                    this.updateMatchingPartial(sectionId);
                 }
             },
             
