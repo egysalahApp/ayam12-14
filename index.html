@@ -529,7 +529,7 @@
                         this.state.sectionData[sec.id] = {
                             questions: sec.questions,
                             currentIndex: 0,
-                            history: [{ role: 'teacher', text: sec.questions[0].teacherMsg }],
+                            history: [{ role: 'teacher', text: sec.questions[0].teacherMsg, msgType: 'question' }],
                             status: 'waiting_answer',
                             mistakesInCurrent: 0
                         };
@@ -1275,12 +1275,15 @@
 
                 let chatHTML = `<div class="flex flex-col gap-4 p-4 md:p-6 bg-slate-50 rounded-2xl border-2 border-slate-200 h-[400px] overflow-y-auto mb-6 shadow-inner no-scrollbar" id="chat-window-${sectionId}">`;
                 state.history.forEach((msg, idx) => {
+                    // منع إعادة حركة الدخول للرسائل القديمة لتجنب الوميض
+                    const animClass = idx >= state.history.length - 2 ? 'fade-in' : '';
                     if (msg.role === 'teacher') {
-                        chatHTML += `<div class="flex justify-start fade-in"><div class="bg-white border-2 border-${theme}-200 text-slate-700 px-5 py-3 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] text-lg md:text-xl font-medium leading-relaxed">👨‍🏫 ${msg.text}</div></div>`;
+                        let textColor = msg.msgType === 'feedback' ? 'text-emerald-600' : 'text-rose-600';
+                        chatHTML += `<div class="flex justify-start ${animClass}"><div class="bg-white border-2 border-${theme}-200 ${textColor} px-5 py-3 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] text-lg md:text-xl font-semibold leading-relaxed">👨‍🏫 ${msg.text}</div></div>`;
                     } else if (msg.role === 'student') {
-                        chatHTML += `<div class="flex justify-end fade-in"><div class="bg-${theme}-600 text-white px-5 py-3 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-lg md:text-xl font-medium leading-relaxed">${msg.text} 🎓</div></div>`;
+                        chatHTML += `<div class="flex justify-end ${animClass}"><div class="bg-${theme}-600 text-white px-5 py-3 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-lg md:text-xl font-medium leading-relaxed">${msg.text} 🎓</div></div>`;
                     } else if (msg.role === 'system_error') {
-                        chatHTML += `<div class="flex justify-center fade-in"><div class="bg-rose-100 text-rose-700 px-4 py-2 rounded-full text-sm font-bold shadow-sm">${msg.text}</div></div>`;
+                        chatHTML += `<div class="flex justify-center ${animClass}"><div class="bg-rose-100 text-rose-700 px-4 py-2 rounded-full text-sm font-bold shadow-sm">${msg.text}</div></div>`;
                     }
                 });
                 
@@ -1289,23 +1292,29 @@
                 }
                 chatHTML += '</div>';
 
-                let optionsHTML = '';
+                // تغليف الأزرار في حاوية مخصصة لتحديثها جزئياً
+                let optionsHTML = `<div id="chat-options-area-${sectionId}" class="w-full">`;
                 if (!isComplete && state.status === 'waiting_answer') {
                     const currentQ = state.questions[state.currentIndex];
-                    optionsHTML = '<div class="flex flex-col gap-3 fade-in">';
+                    optionsHTML += '<div class="flex flex-col gap-3 fade-in">';
                     currentQ.options.forEach((opt, idx) => {
                         optionsHTML += `<button onclick="App.handleChatbotAnswer('${sectionId}', ${idx})" class="w-full text-right p-4 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-semibold text-lg md:text-xl md:hover:border-${theme}-400 md:hover:bg-${theme}-50 active:scale-95 transition-all shadow-sm flex items-center justify-between"><span>${opt}</span><span class="text-slate-400 opacity-50 text-sm shrink-0">👈</span></button>`;
                     });
                     optionsHTML += '</div>';
                 }
+                optionsHTML += '</div>';
 
                 let html = '<div class="max-w-3xl mx-auto w-full fade-in">';
                 if (sectionData.description) { html += `<div class="text-center mb-6"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 bg-opacity-60 p-4 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
                 html += chatHTML + optionsHTML;
+                
+                // تجهيز منطقة النتيجة
+                html += `<div id="section-result-area-${sectionId}">`;
                 if (isComplete) {
                     const progress = this.state.progress[sectionId];
                     html += `<div class="mt-8 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center smooth-expand w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`;
                 }
+                html += `</div>`;
                 html += `<div id="section-footer-area-${sectionId}" class="w-full">` + this.renderSectionFooterControls(sectionId, isComplete) + `</div>`;
                 html += '</div>';
                 return html;
@@ -1317,48 +1326,100 @@
                 
                 const currentQ = state.questions[state.currentIndex];
                 const isCorrect = optIndex === currentQ.correctIndex;
+                const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
                 
                 state.history.push({ role: 'student', text: currentQ.options[optIndex] });
                 state.status = 'animating';
-                this.updateUI();
+                
+                // استخدام التحديث الجزئي بدلاً من updateUI
+                this.updateChatbotPartial(sectionId);
+                this.updateTabs();
                 this.scrollChatToBottom(sectionId);
 
-                // تم ضبط المدة على 3 ثوانٍ لواقعية المحادثة وتجنب ملل الطالب
+                // تم ضبط المدة على ثانية واحدة (1000 مللي ثانية) للرد الأول (التغذية الراجعة)
                 setTimeout(() => {
                     if (isCorrect) {
                         if (state.mistakesInCurrent === 0) this.state.progress[sectionId].score++;
                         this.state.progress[sectionId].answered++;
                         
-                        state.history.push({ role: 'teacher', text: currentQ.feedback });
+                        state.history.push({ role: 'teacher', text: currentQ.feedback, msgType: 'feedback' });
                         state.currentIndex++;
                         state.mistakesInCurrent = 0;
                         
                         if (state.currentIndex < state.questions.length) {
+                            // تم ضبط المدة على ٦ ثوانٍ (6000 مللي ثانية) للسؤال التالي
                             setTimeout(() => {
-                                state.history.push({ role: 'teacher', text: state.questions[state.currentIndex].teacherMsg });
+                                state.history.push({ role: 'teacher', text: state.questions[state.currentIndex].teacherMsg, msgType: 'question' });
                                 state.status = 'waiting_answer';
-                                this.updateUI();
+                                this.updateChatbotPartial(sectionId);
                                 this.scrollChatToBottom(sectionId);
-                            }, 3000); 
+                            }, 6000); 
                         } else {
+                            // إظهار النتيجة النهائية بعد ثانيتين دون إضافة رسالة ختامية مكررة
                             setTimeout(() => {
-                                state.history.push({ role: 'teacher', text: "لقد أنهينا المحادثة بنجاح! أحسنت 🌟" });
                                 state.status = 'completed';
-                                this.updateUI();
+                                this.updateChatbotPartial(sectionId);
                                 this.scrollChatToBottom(sectionId);
+                                this.showSectionResult(sectionId, sectionDef, this.state.progress[sectionId]);
                                 this.checkFinalEvaluation();
-                            }, 3000); 
+                            }, 2000); 
                         }
                     } else {
                         state.mistakesInCurrent++;
                         state.history.push({ role: 'system_error', text: 'إجابة غير دقيقة، حاول مرة أخرى' });
                         state.status = 'waiting_answer';
                     }
-                    this.updateUI();
+                    this.updateChatbotPartial(sectionId);
+                    this.updateTabs();
                     this.scrollChatToBottom(sectionId);
-                }, 3000); 
+                }, 1000); 
             },
-            
+
+            // --- دالة التحديث الجزئي للدردشة (لمنع رعشة الشاشة) ---
+            updateChatbotPartial(sectionId) {
+                const sectionData = APP_DATA.sections.find(s => s.id === sectionId);
+                const theme = sectionData.theme;
+                const state = this.state.sectionData[sectionId];
+                const isComplete = state.currentIndex >= state.questions.length && state.status === 'completed';
+
+                // 1. تحديث نافذة الدردشة من الداخل فقط
+                const chatWindow = document.getElementById(`chat-window-${sectionId}`);
+                if (chatWindow) {
+                    let chatInner = '';
+                    state.history.forEach((msg, idx) => {
+                        const animClass = idx >= state.history.length - 2 ? 'fade-in' : '';
+                        if (msg.role === 'teacher') {
+                            let textColor = msg.msgType === 'feedback' ? 'text-emerald-600' : 'text-rose-600';
+                            chatInner += `<div class="flex justify-start ${animClass}"><div class="bg-white border-2 border-${theme}-200 ${textColor} px-5 py-3 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] text-lg md:text-xl font-semibold leading-relaxed">👨‍🏫 ${msg.text}</div></div>`;
+                        } else if (msg.role === 'student') {
+                            chatInner += `<div class="flex justify-end ${animClass}"><div class="bg-${theme}-600 text-white px-5 py-3 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-lg md:text-xl font-medium leading-relaxed">${msg.text} 🎓</div></div>`;
+                        } else if (msg.role === 'system_error') {
+                            chatInner += `<div class="flex justify-center ${animClass}"><div class="bg-rose-100 text-rose-700 px-4 py-2 rounded-full text-sm font-bold shadow-sm">${msg.text}</div></div>`;
+                        }
+                    });
+                    
+                    if (state.status === 'animating') {
+                        chatInner += `<div class="flex justify-start fade-in"><div class="bg-white border-2 border-${theme}-200 text-slate-400 px-5 py-3 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] text-lg font-medium flex items-center gap-2">👨‍🏫 يكتب...</div></div>`;
+                    }
+                    chatWindow.innerHTML = chatInner;
+                }
+
+                // 2. تحديث منطقة الأزرار فقط
+                const optionsArea = document.getElementById(`chat-options-area-${sectionId}`);
+                if (optionsArea) {
+                    let optionsInner = '';
+                    if (!isComplete && state.status === 'waiting_answer') {
+                        const currentQ = state.questions[state.currentIndex];
+                        optionsInner += '<div class="flex flex-col gap-3 fade-in">';
+                        currentQ.options.forEach((opt, idx) => {
+                            optionsInner += `<button onclick="App.handleChatbotAnswer('${sectionId}', ${idx})" class="w-full text-right p-4 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-semibold text-lg md:text-xl md:hover:border-${theme}-400 md:hover:bg-${theme}-50 active:scale-95 transition-all shadow-sm flex items-center justify-between"><span>${opt}</span><span class="text-slate-400 opacity-50 text-sm shrink-0">👈</span></button>`;
+                        });
+                        optionsInner += '</div>';
+                    }
+                    optionsArea.innerHTML = optionsInner;
+                }
+            },
+
             scrollChatToBottom(sectionId) {
                 requestAnimationFrame(() => {
                     const chatWindow = document.getElementById('chat-window-' + sectionId);
@@ -1896,7 +1957,7 @@
                 else if (secDef.type === 'flashcards') this.state.sectionData[sectionId] = { cards: secDef.cards, currentIndex: 0, isFlipped: false, animatingOut: false, showHint: false, hintAnimate: false };
                 else if (secDef.type === 'sort') this.state.sectionData[sectionId] = { questions: secDef.questions.map(q => ({ originalQuestion: q, options: q.options.map((opt, i) => ({ text: opt, isCorrect: i === q.correct })), showHint: false, hintAnimate: false })), currentIndex: 0, status: 'idle', animatingOut: false };
                 else if (secDef.type === 'spotting') this.state.sectionData[sectionId] = secDef.questions.map(q => ({ originalQuestion: q, answered: false, selectedWordIndex: null, showHint: false, hintAnimate: false, answerAnimate: false, shakeWordIndex: null })); 
-                else if (secDef.type === 'chatbot') { this.state.sectionData[sectionId] = { questions: secDef.questions, currentIndex: 0, history: [{ role: 'teacher', text: secDef.questions[0].teacherMsg }], status: 'waiting_answer', mistakesInCurrent: 0 }; }
+                else if (secDef.type === 'chatbot') { this.state.sectionData[sectionId] = { questions: secDef.questions, currentIndex: 0, history: [{ role: 'teacher', text: secDef.questions[0].teacherMsg, msgType: 'question' }], status: 'waiting_answer', mistakesInCurrent: 0 }; }
                 else if (secDef.type === 'story') { this.state.sectionData[sectionId] = { currentIndex: 0 }; this.state.progress[sectionId].answered = 1; this.state.progress[sectionId].score = secDef.slides.length; }
                 else if (secDef.type === 'hotspot') { this.state.sectionData[sectionId] = secDef.questions.map(q => ({ originalQuestion: q, selectedTargets: [], answered: false, showHint: false, hintAnimate: false, answerAnimate: false, shakeWordId: null })); }
                 else if (secDef.type === 'matching') { this.state.sectionData[sectionId] = { rightItems: shuffleArray(secDef.pairs.map(p => ({ id: p.id, text: p.right }))), leftItems: shuffleArray(secDef.pairs.map(p => ({ id: p.id, text: p.left }))), selectedRight: null, selectedLeft: null, matchedPairs: [], wrongAttempt: false }; }
