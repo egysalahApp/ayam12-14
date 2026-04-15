@@ -95,7 +95,7 @@
             }
 
             100% {
-                max-height: 1000px;
+                max-height: 1500px;
                 opacity: 1;
                 transform: translateY(0);
             }
@@ -428,21 +428,16 @@
                     ]
                 },
 
-                // 8. الحوار التفاعلي (Chatbot Quiz)
+                // 8. مسك الختام (الرسالة الذهبية)
                 {
-                    id: "test_chatbot",
-                    type: "chatbot",
-                    title: "الحوار التفاعلي",
-                    theme: "sky",
-                    description: "دعنا نغوص في تحليل أعمق لنفسية الصبي وسلوكيات شخصيات القرية في هذا الحوار.",
-                    questions: [
-                        { teacherMsg: "أهلاً بك! لماذا في رأيك اعتبر طه حسين علماء القاهرة مثل العوام يمرون دون أن يلتفت إليهم أحد، عكس علماء الريف؟", options: ["بسبب كثرتهم ووفرتهم، تطبيقًا لقانون العرض والطلب.", "لأنهم كانوا أقل علمًا وتواضعًا من علماء الريف."], correctIndex: 0, feedback: "تحليل رائع! استخدم الكاتب قانونًا اقتصاديًا بذكاء ليفسر الظاهرة الاجتماعية لتقديس أهل الريف لعلمائهم القلائل." },
-                        { teacherMsg: "دعنا نتحدث عن الصبي، عندما علم بتأجيل سفره فجأة، كتم حزنه ولم يشكُ. على ماذا يدل هذا التصرف التربوي؟", options: ["يدل على كبريائه وعزة نفسه رغم صغر سنه وضعفه.", "يدل على خوفه الشديد من غضب أخيه الأزهري."], correctIndex: 0, feedback: "بالضبط! هذا الكتمان يعكس شخصية استثنائية تأبى الضعف والاستعطاف." },
-                        { teacherMsg: "لاحقًا، أصبح الصبي يحفظ أسماءً مثل الخريدة والسراجية، كيف أثرت هذه الأسماء الغريبة على نفسيته بين أقرانه؟", options: ["أصابته بالرعب لأنها كانت كتبًا تتحدث عن أساطير وسحر.", "منحته شعورًا بالغرور والفخر، وجعلته يتعالى على رفاقه."], correctIndex: 1, feedback: "نعم، كان يزهو بها ويرددها ليرى نظرات الدهشة والإعجاب في عيونهم!" },
-                        { teacherMsg: "بالنسبة لكاتب المحكمة، ما الدافع النفسي الحقيقي وراء منعه الفتى الأزهري من خطبة الجمعة متذرعًا بصغر سنه؟", options: ["الحقد والغيرة، لأنه كان يطمع في منبر الخطابة لنفسه.", "حرصه الشديد على تطبيق السنة النبوية وعدم مخالفتها."], correctIndex: 0, feedback: "أحسنت. لقد استخدم السن كحجة، لكن الدافع المبطن كان الغيرة من التفاف الناس حول الشاب الأزهرى." },
-                        { teacherMsg: "إذا قارنا بين الخياط والفتى الأزهري، ما جوهر الخلاف بينهما في النظرة لمصادر العلم؟", options: ["الفتى يحب علم الحساب والمنطق، والخياط يحب الشعر والأدب.", "الفتى يعتمد على الكتب الأزهرية، والخياط يرفضها ويؤمن بإلهام القلب (العلم اللدني)."], correctIndex: 1, feedback: "استنتاج دقيق. الخياط يمثل التيار الصوفي الذي يزدري علم الورق ويقدس الإلهام." },
-                        { teacherMsg: "أخيرًا، ما الدرس المستفاد من حفظ الصبي لهذه المتون النحوية الصعبة وهو في سن صغيرة وخلال فترة انتظاره؟", options: ["أن الحفظ دون فهم هو الطريقة الوحيدة للنجاح في الماضي.", "قوة الإرادة، واستغلال وقت الفراغ والانتظار لتطوير الذات وتحدي الصعوبات."], correctIndex: 1, feedback: "هذا هو الهدف التربوي الأسمى من السيرة الذاتية! لقد أتممنا الحوار بنجاح، أنت مبدع 🌟." }
-                    ]
+                    id: "test_golden",
+                    type: "golden_envelope",
+                    title: "مسك الختام",
+                    theme: "amber",
+                    description: "لقد وصلنا إلى نهاية رحلتنا في هذه الفصول. إليك الرسالة الذهبية الختامية.",
+                    quote: "ينظر إليهم الناس في روعة كأنهم خُلقوا من طينة نقية ممتازة.",
+                    summary: "علمتنا هذه الفصول كيف يصنع قانون الندرة (العرض والطلب) مكانة الأشخاص، وكيف يُبنى كبرياء الإنسان من رحم الألم والصدمات، وكيف يستغل الناجح أوقات الانتظار في تطوير ذاته.",
+                    question: "لو كنت مكان الصبي وتم تأجيل حلمك الأكبر فجأة، كيف كنت ستستثمر سنة الانتظار لتصبح أقوى وأكثر استعدادًا؟"
                 }
             ]
         };
@@ -524,19 +519,10 @@
                             return { originalQuestion: q, answered: false, selectedWordIndex: null, showHint: false, hintAnimate: false, answerAnimate: false, shakeWordIndex: null };
                         });
                     }
-                    else if (sec.type === 'chatbot') {
-                        this.state.progress[sec.id] = { answered: 0, total: sec.questions.length, score: 0 };
-                        const mappedQuestions = sec.questions.map(q => {
-                            let opts = q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correctIndex }));
-                            return { ...q, options: shuffleArray(opts) };
-                        });
-                        this.state.sectionData[sec.id] = {
-                            questions: mappedQuestions,
-                            currentIndex: 0,
-                            history: [{ role: 'teacher', text: mappedQuestions[0].teacherMsg, msgType: 'question' }],
-                            status: 'waiting_answer',
-                            mistakesInCurrent: 0
-                        };
+                    else if (sec.type === 'golden_envelope') {
+                        // القسم أصبح يظهر مباشرة، لذا نعتبره مكتملاً فوراً لتفعيل التقييم النهائي
+                        this.state.progress[sec.id] = { answered: 1, total: 1, score: 1 };
+                        this.state.sectionData[sec.id] = { status: 'opened' }; 
                     }
                     else if (sec.type === 'story') {
                         this.state.progress[sec.id] = { answered: 1, total: sec.slides.length, score: sec.slides.length };
@@ -636,7 +622,7 @@
                     case 'mcq': return this.renderStandardSection(sectionData);
                     case 'sort': return this.renderSort(sectionData);
                     case 'spotting': return this.renderSpotting(sectionData);
-                    case 'chatbot': return this.renderChatbot(sectionData);
+                    case 'golden_envelope': return this.renderGoldenEnvelope(sectionData);
                     case 'story': return this.renderStory(sectionData);
                     case 'hotspot': return this.renderHotspot(sectionData);
                     case 'matching': return this.renderMatching(sectionData);
@@ -769,7 +755,7 @@
                 const showHint = currentQState ? currentQState.showHint : false;
                 const hintFadeClass = currentQState && currentQState.hintAnimate ? 'smooth-expand' : '';
 
-                html += `<div class="relative w-full min-h-[12rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500">${!isComplete ? `<div class="w-full max-w-2xl bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 transition-all transform leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${status === 'incorrect' ? 'shake' : ''}"><div class="flex items-center justify-between mb-4"><span class="text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span><button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 md:hover:bg-amber-50">💡 تلميح</button></div><h3 class="text-3xl md:text-4xl font-bold leading-snug text-slate-800 text-center">«${currentQState.originalQuestion.text}»</h3><div id="hint-area-${sectionId}-${currentIndex}" class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'} mt-4"><div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right"><span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span><span class="leading-relaxed">${currentQState.originalQuestion.hint}</span></div></div><div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5"><div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">⚠️ إجابة خاطئة! ${currentQState.originalQuestion.explanation}</div></div></div>` : `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 fade-in py-6"><span class="text-6xl">🎉</span><span>اكتمل فرز البطاقات!</span></div>`}</div>${!isComplete ? `<div class="flex flex-row w-full max-w-2xl mx-auto gap-2 md:gap-4 mt-2 relative z-0 flex-wrap justify-center">${boxesHTML}</div>` : ''}</div>`;
+                html += `<div class="relative w-full min-h-[12rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500">${!isComplete ? `<div class="w-full max-w-2xl bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 transition-all transform leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${status === 'incorrect' ? 'shake' : ''}"><div class="flex items-center justify-between mb-4"><span class="text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span><button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 md:hover:bg-amber-50">💡 تلميح</button></div><h3 class="text-3xl md:text-4xl font-bold leading-snug text-slate-800 text-center">«${currentQState.originalQuestion.text}»</h3><div id="hint-area-${sectionId}-${currentIndex}" class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'} mt-4"><div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right"><span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span><span class="leading-relaxed">${currentQState.originalQuestion.hint}</span></div></div><div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5"><div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">⚠️ إجابة خاطئة! ${currentQState.originalQuestion.explanation}</div></div></div>` : `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 fade-in py-6"><span class="text-6xl">🎉</span><span>اكتملت فرز البطاقات!</span></div>`}</div>${!isComplete ? `<div class="flex flex-row w-full max-w-2xl mx-auto gap-2 md:gap-4 mt-2 relative z-0 flex-wrap justify-center">${boxesHTML}</div>` : ''}</div>`;
                 if (isComplete) { const progress = this.state.progress[sectionId]; html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center smooth-expand max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
                 html += `<div id="section-footer-area-${sectionId}" class="w-full">` + this.renderSectionFooterControls(sectionId, isComplete) + `</div>`; return html;
             },
@@ -843,7 +829,6 @@
                 </div>`;
             },
 
-            // --- دالة عرض قسم النص التفاعلي (Hotspot) - الجديد ---
             renderHotspot(sectionData) {
                 const sectionId = sectionData.id;
                 const progress = this.state.progress[sectionId];
@@ -924,7 +909,6 @@
                 </div>`;
             },
 
-            // --- دالة العرض الرئيسية لقسم المطابقة والتوصيل ---
             renderMatching(sectionData) {
                 let html = `<div class="fade-in" id="${sectionData.id}-matching-wrapper">`;
                 if (sectionData.description) { html += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 bg-opacity-60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
@@ -944,7 +928,6 @@
                 return html;
             },
 
-            // --- الدالة المسؤولة عن التحديث الجزئي بدون رعشة ---
             renderMatchingInner(sectionData) {
                 const sectionId = sectionData.id;
                 const theme = sectionData.theme;
@@ -963,7 +946,6 @@
                 // خط فاصل زخرفي
                 html += `<div class="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 -translate-x-1/2 hidden md:block"></div>`;
 
-                // شبكة عرض (Grid) لضمان تطابق الارتفاعات صفاً بصف
                 html += `<div class="grid grid-cols-2 gap-x-3 md:gap-x-8 gap-y-3 w-full relative z-10">`;
 
                 const maxLength = Math.max(state.rightItems.length, state.leftItems.length);
@@ -979,7 +961,6 @@
                         let rBtnClass = `w-full h-full p-3 md:p-4 rounded-xl border-2 font-bold text-center transition-all duration-300 text-sm md:text-lg flex items-center justify-center min-h-[4.5rem] md:min-h-[5rem] `;
                         
                         if (isMatchedR) {
-                            // اللون الأخضر الهادئ للدلالة على المطابقة الصحيحة وإبقاء البطاقة
                             rBtnClass += `bg-emerald-50 border-emerald-200 text-emerald-700 opacity-90 cursor-default shadow-sm`;
                         } else if (isSelectedR) {
                             rBtnClass += `bg-${theme}-100 border-${theme}-500 text-${theme}-800 shadow-md ring-2 ring-${theme}-200 ring-offset-1`;
@@ -1001,7 +982,6 @@
                         let lBtnClass = `w-full h-full p-3 md:p-4 rounded-xl border-2 font-bold text-center transition-all duration-300 text-sm md:text-lg flex items-center justify-center min-h-[4.5rem] md:min-h-[5rem] `;
                         
                         if (isMatchedL) {
-                            // اللون الأخضر الهادئ للدلالة على المطابقة الصحيحة وإبقاء البطاقة
                             lBtnClass += `bg-emerald-50 border-emerald-200 text-emerald-700 opacity-90 cursor-default shadow-sm`;
                         } else if (isSelectedL) {
                             lBtnClass += `bg-${theme}-100 border-${theme}-500 text-${theme}-800 shadow-md ring-2 ring-${theme}-200 ring-offset-1`;
@@ -1017,7 +997,7 @@
                     }
                 }
 
-                html += `</div></div></div>`; // إغلاق الشبكة والحاويات
+                html += `</div></div></div>`;
 
                 if (isComplete) {
                     html += `<div class="text-2xl md:text-3xl font-bold text-emerald-600 flex flex-col items-center gap-3 fade-in py-6 bg-emerald-50 border-2 border-emerald-200 w-full max-w-lg mx-auto rounded-3xl shadow-sm mt-4"><span class="text-5xl">🏆</span><span>اكتملت المطابقة بنجاح!</span></div>`;
@@ -1142,7 +1122,6 @@
                 html += `<div id="section-footer-area-${sectionId}" class="w-full">` + this.renderSectionFooterControls(sectionId, isComplete) + `</div>`; return html;
             },
             
-            // --- دالة عرض التصنيف (البطاقة المدمجة ذات التثبيت العلوي) ---
             renderClassify(sectionData) {
                 const sectionId = sectionData.id;
                 const theme = sectionData.theme;
@@ -1150,7 +1129,6 @@
                 const { questions, currentIndex, status, placedItems, animatingOut } = state;
                 const isComplete = currentIndex >= questions.length;
 
-                // حركة الدخول الأولية للمجموعة كاملة
                 const isInitialState = currentIndex === 0 && status === 'idle' && !animatingOut;
                 const sectionFadeClass = isInitialState ? 'fade-in' : '';
 
@@ -1162,21 +1140,16 @@
                 const hintFadeClass = (currentQState && currentQState.hintAnimate) ? 'smooth-expand' : '';
                 
                 const shakeClass = status === 'incorrect' ? 'shake' : '';
-
-                // تجميد الأزرار لمنع النقر المزدوج أثناء الطيران
                 const disablePanelClass = (animatingOut || status === 'correct') ? 'pointer-events-none' : '';
 
-                // 1. توليد أزرار التفاعل المدمجة وتوحيد الارتفاع
                 let actionButtonsHTML = '';
                 if (!isComplete) {
                     actionButtonsHTML += `<div class="w-full mt-4 border-t-2 border-slate-100 pt-6 flex flex-wrap justify-center gap-3 ${disablePanelClass}">`;
                     sectionData.categories.forEach(cat => {
                         const btnTheme = cat.theme || 'sky';
-                        // توحيد الحجم: min-h-[4.5rem] md:min-h-[5rem] مع التوسيط المرن
                         let btnClass = `flex-1 min-w-[120px] max-w-[200px] flex items-center justify-center min-h-[4.5rem] md:min-h-[5rem] px-4 py-3 rounded-xl font-bold text-lg md:text-xl transition-all duration-300 border-2 text-center leading-snug `;
                         
                         if (!animatingOut && status !== 'correct') {
-                            // تفعيل اللمس والتحويم مع الخلفية الملونة الخفيفة
                             btnClass += `bg-${btnTheme}-50 border-${btnTheme}-200 text-${btnTheme}-700 md:hover:bg-${btnTheme}-100 md:hover:border-${btnTheme}-400 md:hover:-translate-y-1 active:scale-95 shadow-sm cursor-pointer`;
                         } else {
                             btnClass += `bg-slate-50 border-slate-200 text-slate-400 opacity-60 cursor-default`;
@@ -1187,12 +1160,9 @@
                     actionButtonsHTML += `</div>`;
                 }
 
-                // 2. توليد الصناديق الزجاجية السفلية (عرض النتيجة فقط)
                 let glassyTraysHTML = '';
                 sectionData.categories.forEach(cat => {
                     const boxTheme = cat.theme || 'sky';
-
-                    // بطاقات الصندوق الداخلي بدون fade-in
                     const placedHtml = placedItems[cat.id].map(item => `
                         <div class="mt-3 p-3 md:p-4 rounded-xl text-xl md:text-2xl font-bold bg-white border-r-4 border-${boxTheme}-400 shadow-md leading-snug text-center text-slate-800 relative z-10">
                             ${item.text}
@@ -1224,13 +1194,11 @@
                     </div>`;
                 });
 
-                // 3. البناء الشامل
                 html += `<div class="flex flex-col items-center w-full gap-6 ${sectionFadeClass}">`;
                 if (sectionData.description) {
                     html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 bg-opacity-60 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`;
                 }
 
-                // --- الحاوية الخارجية (تثبيت القمة - Top Pinning) مع الارتفاع الديناميكي ---
                 html += `<div class="relative w-full min-h-[15rem] transition-all duration-500 ease-in-out bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-start pt-8 md:pt-12 px-4 pb-8 md:px-6">`;
 
                 if (currentQuestion) {
@@ -1267,169 +1235,57 @@
                 return html;
             },
 
-            // --- دالة عرض قسم الحوار التفاعلي (الجديد) ---
-            renderChatbot(sectionData) {
+            // --- دالة عرض مسك الختام (الرسالة الذهبية تظهر مباشرة) ---
+            renderGoldenEnvelope(sectionData) {
                 const sectionId = sectionData.id;
-                const theme = sectionData.theme;
-                const state = this.state.sectionData[sectionId];
-                const isComplete = state.currentIndex >= state.questions.length && state.status === 'completed';
 
-                let chatHTML = `<div class="flex flex-col gap-4 p-4 md:p-6 bg-slate-50 rounded-2xl border-2 border-slate-200 h-[400px] overflow-y-auto mb-6 shadow-inner no-scrollbar" id="chat-window-${sectionId}">`;
-                state.history.forEach((msg, idx) => {
-                    // منع إعادة حركة الدخول للرسائل القديمة لتجنب الوميض
-                    const animClass = idx >= state.history.length - 2 ? 'fade-in' : '';
-                    if (msg.role === 'teacher') {
-                        let textColor = msg.msgType === 'feedback' ? 'text-emerald-600' : 'text-rose-600';
-                        chatHTML += `<div class="flex justify-start ${animClass}"><div class="bg-white border-2 border-${theme}-200 ${textColor} px-5 py-3 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] text-lg md:text-xl font-semibold leading-relaxed">👨‍🏫 ${msg.text}</div></div>`;
-                    } else if (msg.role === 'student') {
-                        chatHTML += `<div class="flex justify-end ${animClass}"><div class="bg-${theme}-600 text-white px-5 py-3 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-lg md:text-xl font-medium leading-relaxed">${msg.text} 🎓</div></div>`;
-                    } else if (msg.role === 'system_error') {
-                        chatHTML += `<div class="flex justify-center ${animClass}"><div class="bg-rose-100 text-rose-700 px-4 py-2 rounded-full text-sm font-bold shadow-sm">${msg.text}</div></div>`;
-                    }
-                });
-                
-                if (state.status === 'animating') {
-                    chatHTML += `<div class="flex justify-start fade-in"><div class="bg-white border-2 border-${theme}-200 text-slate-400 px-5 py-3 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] text-lg font-medium flex items-center gap-2">👨‍🏫 يكتب...</div></div>`;
-                }
-                chatHTML += '</div>';
+                return `
+                <div class="max-w-3xl mx-auto w-full fade-in" id="${sectionId}-container">
+                    <div class="text-center mb-8 w-full">
+                        <p class="text-lg md:text-xl text-slate-600 font-medium bg-white border border-slate-200 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full leading-relaxed">${sectionData.description}</p>
+                    </div>
 
-                // تغليف الأزرار في حاوية مخصصة لتحديثها جزئياً
-                let optionsHTML = `<div id="chat-options-area-${sectionId}" class="w-full">`;
-                if (!isComplete && state.status === 'waiting_answer') {
-                    const currentQ = state.questions[state.currentIndex];
-                    optionsHTML += '<div class="flex flex-col gap-3 fade-in">';
-                    currentQ.options.forEach((opt, idx) => {
-                        optionsHTML += `<button onclick="App.handleChatbotAnswer('${sectionId}', ${idx})" class="w-full text-right p-4 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-semibold text-lg md:text-xl md:hover:border-${theme}-400 md:hover:bg-${theme}-50 active:scale-95 transition-all shadow-sm flex items-center justify-between"><span>${opt.text}</span><span class="text-slate-400 opacity-50 text-sm shrink-0">👈</span></button>`;
-                    });
-                    optionsHTML += '</div>';
-                }
-                optionsHTML += '</div>';
-
-                let html = '<div class="max-w-3xl mx-auto w-full fade-in">';
-                if (sectionData.description) { html += `<div class="text-center mb-6"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 bg-opacity-60 p-4 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
-                html += chatHTML + optionsHTML;
-                
-                // تجهيز منطقة النتيجة
-                html += `<div id="section-result-area-${sectionId}">`;
-                if (isComplete) {
-                    const progress = this.state.progress[sectionId];
-                    html += `<div class="mt-8 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center smooth-expand w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`;
-                }
-                html += `</div>`;
-                html += `<div id="section-footer-area-${sectionId}" class="w-full">` + this.renderSectionFooterControls(sectionId, isComplete) + `</div>`;
-                html += '</div>';
-                return html;
-            },
-
-            handleChatbotAnswer(sectionId, optIndex) {
-                const state = this.state.sectionData[sectionId];
-                if (state.status !== 'waiting_answer') return;
-                
-                const currentQ = state.questions[state.currentIndex];
-                const isCorrect = currentQ.options[optIndex].isCorrect;
-                const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
-                
-                state.history.push({ role: 'student', text: currentQ.options[optIndex].text });
-                state.status = 'animating';
-                
-                // استخدام التحديث الجزئي بدلاً من updateUI
-                this.updateChatbotPartial(sectionId);
-                this.updateTabs();
-                this.scrollChatToBottom(sectionId);
-
-                // تم ضبط المدة على ثانية واحدة (1000 مللي ثانية) للرد الأول (التغذية الراجعة)
-                setTimeout(() => {
-                    if (isCorrect) {
-                        if (state.mistakesInCurrent === 0) this.state.progress[sectionId].score++;
-                        this.state.progress[sectionId].answered++;
+                    <div class="bg-white border border-slate-200 rounded-[2rem] p-8 md:p-12 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] relative">
                         
-                        state.history.push({ role: 'teacher', text: currentQ.feedback, msgType: 'feedback' });
-                        state.currentIndex++;
-                        state.mistakesInCurrent = 0;
-                        
-                        if (state.currentIndex < state.questions.length) {
-                            // تم ضبط المدة على ٦ ثوانٍ (6000 مللي ثانية) للسؤال التالي
-                            setTimeout(() => {
-                                state.history.push({ role: 'teacher', text: state.questions[state.currentIndex].teacherMsg, msgType: 'question' });
-                                state.status = 'waiting_answer';
-                                this.updateChatbotPartial(sectionId);
-                                this.scrollChatToBottom(sectionId);
-                            }, 6000); 
-                        } else {
-                            // إيقاف حالة "يكتب..." فوراً لأن المحادثة انتهت
-                            state.status = 'completed';
-                            // إظهار النتيجة النهائية بعد ثانيتين دون إضافة رسالة ختامية مكررة
-                            setTimeout(() => {
-                                this.updateChatbotPartial(sectionId);
-                                this.scrollChatToBottom(sectionId);
-                                this.showSectionResult(sectionId, sectionDef, this.state.progress[sectionId]);
-                                this.checkFinalEvaluation();
-                            }, 2000); 
-                        }
-                    } else {
-                        state.mistakesInCurrent++;
-                        state.history.push({ role: 'system_error', text: 'إجابة غير دقيقة، حاول مرة أخرى' });
-                        state.status = 'waiting_answer';
-                    }
-                    this.updateChatbotPartial(sectionId);
-                    this.updateTabs();
-                    this.scrollChatToBottom(sectionId);
-                }, 1000); 
+                        <!-- الترويسة -->
+                        <div class="text-center mb-10">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-50 text-amber-500 mb-4 shadow-sm border border-amber-100 text-3xl">✨</div>
+                            <h2 class="text-2xl md:text-3xl font-bold text-slate-800">الرسالة الذهبية</h2>
+                            <div class="w-16 h-1 bg-amber-400 mx-auto mt-4 rounded-full"></div>
+                        </div>
+
+                        <!-- 1. اقتباس الدرس -->
+                        <div class="mb-10 relative">
+                            <div class="bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-100 relative">
+                                <span class="absolute -top-6 right-4 text-5xl text-slate-300 font-bold leading-none select-none pointer-events-none">"</span>
+                                <h4 class="text-slate-500 font-bold text-sm md:text-base mb-4 uppercase tracking-wider flex items-center gap-2">
+                                    <span class="bg-slate-200 text-slate-600 px-2 py-1 rounded text-xs">📌</span> اقتباس الدرس
+                                </h4>
+                                <p class="text-xl md:text-2xl font-bold text-slate-800 leading-[1.8]">«${sectionData.quote}»</p>
+                                <span class="absolute -bottom-10 left-4 text-5xl text-slate-300 font-bold leading-none select-none pointer-events-none">"</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. الخلاصة -->
+                        <div class="mb-10 px-2">
+                            <h4 class="text-slate-500 font-bold text-sm md:text-base mb-3 uppercase tracking-wider flex items-center gap-2">
+                                <span class="bg-slate-200 text-slate-600 px-2 py-1 rounded text-xs">💡</span> الخلاصة
+                            </h4>
+                            <p class="text-lg md:text-xl font-semibold text-slate-700 leading-relaxed">${sectionData.summary}</p>
+                        </div>
+
+                        <!-- 3. سؤال للتأمل -->
+                        <div class="bg-gradient-to-br from-amber-50 to-white rounded-2xl p-6 md:p-8 border border-amber-100 shadow-sm transform transition-transform md:hover:-translate-y-1">
+                            <h4 class="text-amber-600 font-bold text-sm md:text-base mb-3 uppercase tracking-wider flex items-center gap-2">
+                                <span class="bg-amber-100 text-amber-600 px-2 py-1 rounded text-xs">🤔</span> سؤال للتأمل
+                            </h4>
+                            <p class="text-lg md:text-xl font-bold text-slate-800 leading-relaxed">${sectionData.question}</p>
+                        </div>
+                    </div>
+                </div>
+                `;
             },
 
-            // --- دالة التحديث الجزئي للدردشة (لمنع رعشة الشاشة) ---
-            updateChatbotPartial(sectionId) {
-                const sectionData = APP_DATA.sections.find(s => s.id === sectionId);
-                const theme = sectionData.theme;
-                const state = this.state.sectionData[sectionId];
-                const isComplete = state.currentIndex >= state.questions.length && state.status === 'completed';
-
-                // 1. تحديث نافذة الدردشة من الداخل فقط
-                const chatWindow = document.getElementById(`chat-window-${sectionId}`);
-                if (chatWindow) {
-                    let chatInner = '';
-                    state.history.forEach((msg, idx) => {
-                        const animClass = idx >= state.history.length - 2 ? 'fade-in' : '';
-                        if (msg.role === 'teacher') {
-                            let textColor = msg.msgType === 'feedback' ? 'text-emerald-600' : 'text-rose-600';
-                            chatInner += `<div class="flex justify-start ${animClass}"><div class="bg-white border-2 border-${theme}-200 ${textColor} px-5 py-3 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] text-lg md:text-xl font-semibold leading-relaxed">👨‍🏫 ${msg.text}</div></div>`;
-                        } else if (msg.role === 'student') {
-                            chatInner += `<div class="flex justify-end ${animClass}"><div class="bg-${theme}-600 text-white px-5 py-3 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-lg md:text-xl font-medium leading-relaxed">${msg.text} 🎓</div></div>`;
-                        } else if (msg.role === 'system_error') {
-                            chatInner += `<div class="flex justify-center ${animClass}"><div class="bg-rose-100 text-rose-700 px-4 py-2 rounded-full text-sm font-bold shadow-sm">${msg.text}</div></div>`;
-                        }
-                    });
-                    
-                    if (state.status === 'animating') {
-                        chatInner += `<div class="flex justify-start fade-in"><div class="bg-white border-2 border-${theme}-200 text-slate-400 px-5 py-3 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] text-lg font-medium flex items-center gap-2">👨‍🏫 يكتب...</div></div>`;
-                    }
-                    chatWindow.innerHTML = chatInner;
-                }
-
-                // 2. تحديث منطقة الأزرار فقط
-                const optionsArea = document.getElementById(`chat-options-area-${sectionId}`);
-                if (optionsArea) {
-                    let optionsInner = '';
-                    if (!isComplete && state.status === 'waiting_answer') {
-                        const currentQ = state.questions[state.currentIndex];
-                        optionsInner += '<div class="flex flex-col gap-3 fade-in">';
-                        currentQ.options.forEach((opt, idx) => {
-                            optionsInner += `<button onclick="App.handleChatbotAnswer('${sectionId}', ${idx})" class="w-full text-right p-4 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-semibold text-lg md:text-xl md:hover:border-${theme}-400 md:hover:bg-${theme}-50 active:scale-95 transition-all shadow-sm flex items-center justify-between"><span>${opt.text}</span><span class="text-slate-400 opacity-50 text-sm shrink-0">👈</span></button>`;
-                        });
-                        optionsInner += '</div>';
-                    }
-                    optionsArea.innerHTML = optionsInner;
-                }
-            },
-
-            scrollChatToBottom(sectionId) {
-                requestAnimationFrame(() => {
-                    const chatWindow = document.getElementById('chat-window-' + sectionId);
-                    if (chatWindow) chatWindow.scrollTop = chatWindow.scrollHeight;
-                });
-            },
-
-            // --- دالة عرض قسم البطاقات المنزلقة (الجديد) ---
             renderStory(sectionData) {
                 const sectionId = sectionData.id;
                 const theme = sectionData.theme;
@@ -1467,9 +1323,7 @@
                     </div>
                 </div>`;
 
-                if (isComplete) {
-                    html += `<div class="mt-8 pt-4 w-full flex justify-center fade-in"><button onclick="App.handleNextSection()" class="bg-${theme}-600 md:hover:bg-${theme}-700 text-white font-semibold text-xl md:text-2xl py-4 px-10 rounded-full shadow-lg flex items-center gap-3 active:scale-95 transition-all">القسم التالي ${ICONS.arrowLeft}</button></div>`;
-                }
+                html += `<div class="mt-8 pt-4 w-full flex justify-center fade-in"><button onclick="App.handleNextSection()" class="bg-${theme}-600 md:hover:bg-${theme}-700 text-white font-semibold text-xl md:text-2xl py-4 px-10 rounded-full shadow-lg flex items-center gap-3 active:scale-95 transition-all">القسم التالي ${ICONS.arrowLeft}</button></div>`;
                 
                 html += '</div>';
                 return html;
@@ -1495,6 +1349,8 @@
 
             renderSectionFooterControls(sectionId, isComplete) {
                 const sectionData = APP_DATA.sections.find(s => s.id === sectionId); const isLast = sectionId === APP_DATA.sections[APP_DATA.sections.length - 1].id;
+                // إخفاء أزرار الإعادة والتالي في قسم الرسالة الذهبية لأن له واجهة خاصة
+                if (sectionData.type === 'golden_envelope') return '';
                 return `<div class="mt-8 flex flex-col md:flex-row justify-center items-center gap-4 mx-auto w-full"><button onclick="App.handleResetSection('${sectionId}')" class="w-full md:w-auto px-8 py-3 md:py-4 rounded-full font-semibold text-xl md:text-2xl text-slate-600 bg-slate-100 md:hover:bg-slate-200 active:scale-95 transition-transform flex items-center justify-center gap-3">${ICONS.refresh} إعادة المحاولة</button>${!isLast ? `<button onclick="App.handleNextSection()" class="w-full md:w-auto px-8 md:px-10 py-3 md:py-4 rounded-full font-semibold text-xl md:text-2xl text-white shadow-md transition-transform flex items-center justify-center gap-3 active:scale-95 bg-${sectionData.theme}-600 md:hover:bg-${sectionData.theme}-700">القسم التالي ${ICONS.arrowLeft}</button>` : ''}</div>`;
             },
             
@@ -1961,29 +1817,48 @@
                 else if (secDef.type === 'flashcards') this.state.sectionData[sectionId] = { cards: secDef.cards, currentIndex: 0, isFlipped: false, animatingOut: false, showHint: false, hintAnimate: false };
                 else if (secDef.type === 'sort') this.state.sectionData[sectionId] = { questions: secDef.questions.map(q => ({ originalQuestion: q, options: q.options.map((opt, i) => ({ text: opt, isCorrect: i === q.correct })), showHint: false, hintAnimate: false })), currentIndex: 0, status: 'idle', animatingOut: false };
                 else if (secDef.type === 'spotting') this.state.sectionData[sectionId] = secDef.questions.map(q => ({ originalQuestion: q, answered: false, selectedWordIndex: null, showHint: false, hintAnimate: false, answerAnimate: false, shakeWordIndex: null })); 
-                else if (secDef.type === 'chatbot') { 
-                    const mappedQuestions = secDef.questions.map(q => {
-                        let opts = q.options.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === q.correctIndex }));
-                        return { ...q, options: shuffleArray(opts) };
-                    });
-                    this.state.sectionData[sectionId] = { questions: mappedQuestions, currentIndex: 0, history: [{ role: 'teacher', text: mappedQuestions[0].teacherMsg, msgType: 'question' }], status: 'waiting_answer', mistakesInCurrent: 0 }; 
-                }
+                else if (secDef.type === 'golden_envelope') this.state.sectionData[sectionId] = { status: 'opened' };
                 else if (secDef.type === 'story') { this.state.sectionData[sectionId] = { currentIndex: 0 }; this.state.progress[sectionId].answered = 1; this.state.progress[sectionId].score = secDef.slides.length; }
                 else if (secDef.type === 'hotspot') { this.state.sectionData[sectionId] = secDef.questions.map(q => ({ originalQuestion: q, selectedTargets: [], answered: false, showHint: false, hintAnimate: false, answerAnimate: false, shakeWordId: null })); }
                 else if (secDef.type === 'matching') { this.state.sectionData[sectionId] = { rightItems: shuffleArray(secDef.pairs.map(p => ({ id: p.id, text: p.right }))), leftItems: shuffleArray(secDef.pairs.map(p => ({ id: p.id, text: p.left }))), selectedRight: null, selectedLeft: null, matchedPairs: [], wrongAttempt: false }; }
                 this.updateUI(); this.scrollToContent();
             },
             handleGlobalRestart() { this.initSectionData(); if (APP_DATA.sections.length > 0) this.state.activeTab = APP_DATA.sections[0].id; this.updateUI(); this.scrollTabIntoView(this.state.activeTab); requestAnimationFrame(() => { const header = document.getElementById('main-header'); window.scrollTo({ top: header ? header.offsetHeight : 80, behavior: 'smooth' }); }); },
-            checkFinalEvaluation() {
-                const scorableSections = APP_DATA.sections.filter(s => s.type !== 'intro' && s.type !== 'story'); if (scorableSections.length === 0) return;
+            
+            checkFinalEvaluation(forceShow = false) {
+                // استثناء قسم المقدمة والقصة والرسالة الذهبية (لا تحتسب ضمن الدرجات)
+                const scorableSections = APP_DATA.sections.filter(s => s.type !== 'intro' && s.type !== 'story' && s.type !== 'golden_envelope'); 
+                if (scorableSections.length === 0) return;
+                
                 const isAllComplete = scorableSections.every(s => { const p = this.state.progress[s.id]; return p && p.total > 0 && p.answered === p.total; });
-                const container = document.getElementById('final-evaluation-container'); const activeSecDef = APP_DATA.sections.find(s => s.id === this.state.activeTab);
-                if (isAllComplete && activeSecDef.type !== 'intro' && activeSecDef.type !== 'story') {
+                const container = document.getElementById('final-evaluation-container'); 
+                const activeSecDef = APP_DATA.sections.find(s => s.id === this.state.activeTab);
+                
+                let canShow = isAllComplete && activeSecDef.type !== 'intro' && activeSecDef.type !== 'story';
+                // تأخير ظهور النتيجة في قسم الرسالة الذهبية حتى يتم فتح المظروف
+                if (canShow && activeSecDef.type === 'golden_envelope' && this.state.sectionData[activeSecDef.id].status !== 'opened') {
+                    canShow = false;
+                }
+
+                if (canShow || forceShow) {
                     let totalScore = 0, totalQuestions = 0; scorableSections.forEach(s => { totalScore += this.state.progress[s.id].score; totalQuestions += this.state.progress[s.id].total; });
                     const percentage = Math.round((totalScore / totalQuestions) * 100); let message = "", color = "";
                     if (percentage < 60) { message = "تحتاج إلى مزيد من التدريب، لا تيأس وحاول مرة أخرى!"; color = "text-rose-600"; } else if (percentage < 85) { message = "أداء رائع! مستواك جيد جدًا."; color = "text-violet-600"; } else { message = "أداء استثنائي! أنت بطل حقيقي وخبير في هذا الدرس."; color = "text-emerald-600"; }
-                    container.innerHTML = `<div id="final-eval-box" class="mt-12 bg-white p-8 md:p-12 rounded-3xl shadow-lg border-2 border-amber-200 text-center smooth-expand">${ICONS.medal}<h2 class="text-3xl md:text-4xl font-bold text-slate-700 mb-6">التقييم النهائي</h2><div class="text-6xl md:text-7xl font-bold mb-8 text-slate-700 flex items-center justify-center gap-4"><span class="${color}">${toArabicNum(totalScore)}</span><span class="text-slate-400 text-3xl md:text-4xl font-medium mt-2">من</span><span class="text-slate-500">${toArabicNum(totalQuestions)}</span></div><div class="inline-block bg-amber-100 text-amber-800 px-6 py-2 rounded-full font-semibold text-xl md:text-2xl mb-6">النسبة المئوية: ${toArabicNum(percentage)}%</div><p class="text-xl md:text-2xl font-semibold leading-relaxed ${color} mb-10">${message}</p><button onclick="App.handleGlobalRestart()" class="px-8 md:px-10 py-3 md:py-4 rounded-full font-semibold text-xl md:text-2xl text-white bg-slate-700 md:hover:bg-slate-800 shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-3 mx-auto">${ICONS.refresh} ابدأ من جديد</button></div>`;
-                } else { container.innerHTML = ''; }
+                    
+                    const evalHTML = `<div id="final-eval-box" class="mt-12 bg-white p-8 md:p-12 rounded-3xl shadow-lg border-2 border-amber-200 text-center smooth-expand">${ICONS.medal}<h2 class="text-3xl md:text-4xl font-bold text-slate-700 mb-6">التقييم النهائي</h2><div class="text-6xl md:text-7xl font-bold mb-8 text-slate-700 flex items-center justify-center gap-4"><span class="${color}">${toArabicNum(totalScore)}</span><span class="text-slate-400 text-3xl md:text-4xl font-medium mt-2">من</span><span class="text-slate-500">${toArabicNum(totalQuestions)}</span></div><div class="inline-block bg-amber-100 text-amber-800 px-6 py-2 rounded-full font-semibold text-xl md:text-2xl mb-6">النسبة المئوية: ${toArabicNum(percentage)}%</div><p class="text-xl md:text-2xl font-semibold leading-relaxed ${color} mb-10">${message}</p><button onclick="App.handleGlobalRestart()" class="px-8 md:px-10 py-3 md:py-4 rounded-full font-semibold text-xl md:text-2xl text-white bg-slate-700 md:hover:bg-slate-800 shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-3 mx-auto">${ICONS.refresh} ابدأ من جديد</button></div>`;
+                    
+                    if (forceShow) {
+                        const triggerContainer = document.getElementById('final-evaluation-trigger-container');
+                        if (triggerContainer) {
+                            triggerContainer.innerHTML = evalHTML;
+                            setTimeout(() => { triggerContainer.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+                        }
+                    } else {
+                        container.innerHTML = evalHTML;
+                    }
+                } else { 
+                    if (!forceShow) container.innerHTML = ''; 
+                }
             }
         };
         document.addEventListener('DOMContentLoaded', () => { try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; window.scrollTo(0, 0); } catch (e) { } App.init(); });
