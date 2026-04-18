@@ -258,7 +258,7 @@
                     type: "matching",
                     title: "المطابقة والتوصيل",
                     theme: "indigo",
-                    description: "انقر على الكلمة من القائمة يميناً، ثم انقر على ما يناسبها من القائمة يساراً لربط الشخصيات والمفاهيم بسماتها.",
+                    description: "انقر على الكلمة من القائمة يميناً، ثم انقر على ما يناسبها من القائمة يساراً لربط الشخصيات والم المفاهيم بسماتها.",
                     pairs: [
                         { id: "m1", right: "الأب يوم الخطبة", left: "فخور ومبتهج، ثم غاضب يلعن الحسد." },
                         { id: "m2", right: "الأم يوم الخطبة", left: "مشفقة خائفة، تطوف بالبيت لتبخره." },
@@ -460,10 +460,10 @@
                     type: "golden_envelope",
                     title: "أثرٌ يبقى",
                     theme: "amber",
-                    description: "لقد وصلنا إلى نهاية رحلتنا في هذه الفصول. إليك الخلاصة والرسالة الخالدة.",
-                    quote: "<span class=\"text-2xl md:text-3xl font-medium leading-[2.2] block\">«ولكنهُ كتمَ في نفسهِ حسرةً لاذعةً.. ولم يقل شيئًا ولم يظهر حزنًا، وإنما تكلفَ الرضا وابتسم.»</span>",
-                    summary: "<span class=\"text-xl md:text-2xl font-medium leading-[2.2] block\">تكشف لنا هذه العبارة عن نضجٍ مبكر وعزة نفس نادرة لدى الصبي. فرغم صدمة تأجيل سفره للأزهر، اختار الكبرياء وابتسم مداريًا خيبة أمله؛ ليعلمنا أن بناء الشخصية الصلبة يبدأ غالبًا من قدرتنا على احتواء خيباتنا الأولى في صمت.</span>",
-                    question: "<span class=\"text-xl md:text-2xl font-medium leading-[2.2] block\">كيف يمكن لـ«كتمان الألم» وتكلف الرضا في مواجهة الصدمات أن يكون سلاحًا ذا حدين في بناء شخصية الإنسان؟</span>"
+                    description: "لقد وصلنا إلى نهاية رحلتنا في هذه الفصول. لنتأمل معًا هذه الخلاصة.",
+                    quote: "<span class=\"text-2xl md:text-3xl font-medium leading-[2.2] block text-center\">«ولكنهُ كتمَ في نفسهِ حسرةً لاذعةً.. ولم يقل شيئًا ولم يظهر حزنًا، وإنما تكلفَ الرضا وابتسم.»</span>",
+                    summary: "<span class=\"text-xl md:text-2xl font-medium leading-[2.2] block text-center\">تكشف لنا هذه العبارة عن نضجٍ مبكر وعزة نفس نادرة لدى الصبي. فرغم صدمة تأجيل سفره للأزهر، اختار الكبرياء وابتسم مداريًا خيبة أمله؛ ليعلمنا أن بناء الشخصية الصلبة يبدأ غالبًا من قدرتنا على احتواء خيباتنا الأولى في صمت.</span>",
+                    question: "<span class=\"text-xl md:text-2xl font-medium leading-[2.2] block text-center\">كيف يمكن لـ«كتمان الألم» وتكلف الرضا في مواجهة الصدمات أن يكون سلاحًا ذا حدين في بناء شخصية الإنسان؟</span>"
                 }
             ]
         };
@@ -546,7 +546,6 @@
                         });
                     }
                     else if (sec.type === 'golden_envelope') {
-                        // القسم أصبح يظهر مباشرة، لذا نعتبره مكتملاً فوراً لتفعيل التقييم النهائي
                         this.state.progress[sec.id] = { answered: 1, total: 1, score: 1 };
                         this.state.sectionData[sec.id] = { status: 'opened' }; 
                     }
@@ -764,10 +763,25 @@
                     </div>
                 </div>`;
             },
+            
             renderSort(sectionData) {
+                let html = `<div class="fade-in" id="${sectionData.id}-sort-wrapper">`;
+                if (sectionData.description) { html += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 bg-opacity-60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
+                html += `<div id="${sectionData.id}-sort-container">`;
+                html += this.renderSortInner(sectionData);
+                html += `</div>`;
+                
+                html += `<div id="section-result-area-${sectionData.id}">`;
+                const progress = this.state.progress[sectionData.id];
+                const isComplete = progress.answered === progress.total;
+                if (isComplete) { html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${sectionData.theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
+                html += '</div>';
+                html += `<div id="section-footer-area-${sectionData.id}" class="w-full">` + this.renderSectionFooterControls(sectionData.id, isComplete) + `</div></div>`;
+                return html;
+            },
+            renderSortInner(sectionData) {
                 const sectionId = sectionData.id; const theme = sectionData.theme; const state = this.state.sectionData[sectionId]; const { questions, currentIndex, status, animatingOut } = state; const isComplete = currentIndex >= questions.length;
-                let html = '<div class="flex flex-col items-center w-full gap-6 fade-in">';
-                if (sectionData.description) { html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 bg-opacity-60 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`; }
+                let html = '<div class="flex flex-col items-center w-full gap-6">';
                 let boxesHTML = ''; if (!isComplete) {
                     const colors = ['emerald', 'violet', 'cyan', 'teal', 'indigo'];
                     state.questions[currentIndex].options.forEach((opt, idx) => {
@@ -782,8 +796,12 @@
                 const hintFadeClass = currentQState && currentQState.hintAnimate ? 'smooth-expand' : '';
 
                 html += `<div class="relative w-full min-h-[12rem] bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500">${!isComplete ? `<div class="w-full max-w-2xl bg-white p-5 md:p-8 rounded-2xl shadow-lg border-2 border-slate-200 transition-all transform leading-snug flex flex-col justify-start z-10 ${animatingOut ? 'fly-out' : 'fade-in'} ${status === 'incorrect' ? 'shake' : ''}"><div class="flex items-center justify-between mb-4"><span class="text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span><button onclick="App.toggleHint('${sectionId}', ${currentIndex})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-lg md:text-xl font-bold transition-all active:scale-95 text-amber-500 md:hover:bg-amber-50">💡 تلميح</button></div><h3 class="text-3xl md:text-4xl font-bold leading-snug text-slate-800 text-center">«${currentQState.originalQuestion.text}»</h3><div id="hint-area-${sectionId}-${currentIndex}" class="${showHint ? `block w-full ${hintFadeClass}` : 'hidden'} mt-4"><div class="bg-amber-50 text-amber-900 p-4 rounded-xl text-xl font-medium border border-amber-200 flex gap-2 items-start text-right"><span class="text-amber-500 font-semibold mt-1 shrink-0">💡</span><span class="leading-relaxed">${currentQState.originalQuestion.hint}</span></div></div><div class="${status === 'incorrect' ? 'block w-full smooth-expand' : 'hidden'} mt-5"><div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-center text-rose-700 text-lg md:text-xl font-bold shadow-sm">⚠️ إجابة خاطئة! ${currentQState.originalQuestion.explanation}</div></div></div>` : `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 fade-in py-6"><span class="text-6xl">🎉</span><span>اكتملت فرز البطاقات!</span></div>`}</div>${!isComplete ? `<div class="flex flex-row w-full max-w-2xl mx-auto gap-2 md:gap-4 mt-2 relative z-0 flex-wrap justify-center">${boxesHTML}</div>` : ''}</div>`;
-                if (isComplete) { const progress = this.state.progress[sectionId]; html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center smooth-expand max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
-                html += `<div id="section-footer-area-${sectionId}" class="w-full">` + this.renderSectionFooterControls(sectionId, isComplete) + `</div>`; return html;
+                return html;
+            },
+            updateSortPartial(sectionId) {
+                const container = document.getElementById(`${sectionId}-sort-container`);
+                const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
+                if (container) container.innerHTML = this.renderSortInner(sectionDef);
             },
 
             renderSpotting(sectionData) {
@@ -1133,21 +1151,55 @@
                     </div>
                 </div>`;
             },
+            
             renderFlashcards(sectionData) {
+                let html = `<div class="fade-in" id="${sectionData.id}-flashcards-wrapper">`;
+                if (sectionData.description) { html += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 bg-opacity-60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
+                html += `<div id="${sectionData.id}-flashcards-container">`;
+                html += this.renderFlashcardsInner(sectionData);
+                html += `</div>`;
+                
+                html += `<div id="section-result-area-${sectionData.id}">`;
+                const progress = this.state.progress[sectionData.id];
+                const isComplete = progress.answered === progress.total;
+                if (isComplete) { html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${sectionData.theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
+                html += '</div>';
+                html += `<div id="section-footer-area-${sectionData.id}" class="w-full">` + this.renderSectionFooterControls(sectionData.id, isComplete) + `</div></div>`;
+                return html;
+            },
+            renderFlashcardsInner(sectionData) {
                 const sectionId = sectionData.id; const theme = sectionData.theme; const state = this.state.sectionData[sectionId]; const { cards, currentIndex, isFlipped, animatingOut } = state; const isComplete = currentIndex >= cards.length;
-                let html = `<div class="flex flex-col items-center w-full gap-6 fade-in">`;
-                if (sectionData.description) { html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 bg-opacity-60 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`; }
+                let html = `<div class="flex flex-col items-center w-full gap-6">`;
                 html += `<div class="relative w-full min-h-[20rem] flex flex-col items-center justify-center p-4 md:p-6 transition-all duration-500 perspective">`;
                 if (!isComplete) {
                     const card = cards[currentIndex]; const flippedClass = isFlipped ? 'rotate-y-180' : '';
                     html += `<div class="w-full max-w-lg h-80 relative perspective ${animatingOut ? 'fly-out' : 'fade-in'}"><div id="flashcard-inner-${sectionId}" class="w-full h-full absolute preserve-3d flip-transition cursor-pointer active:scale-[0.98] ${flippedClass}" onclick="App.handleFlashcardFlip('${sectionId}')"><div class="absolute w-full h-full backface-hidden bg-white border-2 border-slate-200 rounded-3xl shadow-lg flex flex-col items-center justify-center p-8 text-center md:hover:border-${theme}-300 md:hover:shadow-xl transition-all"><span class="absolute top-6 right-6 text-${theme}-600 font-bold text-lg md:text-xl">البطاقة ${toArabicNum(currentIndex + 1)}</span><div class="text-slate-400 mb-4">${ICONS.flipIcon}</div><h3 class="text-4xl md:text-5xl font-bold text-slate-800 leading-snug">${card.front}</h3></div><div class="absolute w-full h-full backface-hidden bg-slate-50 border-2 border-${theme}-400 rounded-3xl shadow-lg flex flex-col items-center justify-center p-8 text-center rotate-y-180"><h3 class="text-3xl font-bold text-${theme}-700 mb-4">${card.back}</h3><p class="text-xl font-medium text-slate-700 leading-relaxed mb-6">${card.explanation}</p><div class="w-full grid grid-cols-2 gap-3 mt-auto relative z-20" onclick="event.stopPropagation()"><button onclick="App.handleFlashcardAnswer('${sectionId}', true)" class="bg-emerald-500 md:hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-transform active:scale-95 shadow-md flex items-center justify-center gap-2 text-lg">${ICONS.checkCircle} عرفتها</button><button onclick="App.handleFlashcardAnswer('${sectionId}', false)" class="bg-rose-500 md:hover:bg-rose-600 text-white font-bold py-3 rounded-xl transition-transform active:scale-95 shadow-md flex items-center justify-center gap-2 text-lg">${ICONS.xCircle} أخطأت</button></div></div></div></div>`;
                 } else { html += `<div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 fade-in py-10 bg-white border-2 border-emerald-200 w-full max-w-lg rounded-3xl shadow-lg"><span class="text-6xl">🏆</span><span>انتهت البطاقات!</span></div>`; }
                 html += `</div></div>`;
-                if (isComplete) { const progress = this.state.progress[sectionId]; html += `<div class="mt-8 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center smooth-expand max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
-                html += `<div id="section-footer-area-${sectionId}" class="w-full">` + this.renderSectionFooterControls(sectionId, isComplete) + `</div>`; return html;
+                return html;
+            },
+            updateFlashcardsPartial(sectionId) {
+                const container = document.getElementById(`${sectionId}-flashcards-container`);
+                const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
+                if (container) container.innerHTML = this.renderFlashcardsInner(sectionDef);
             },
             
             renderClassify(sectionData) {
+                let html = `<div class="fade-in" id="${sectionData.id}-classify-wrapper">`;
+                if (sectionData.description) { html += `<div class="text-center mb-8"><p class="text-lg md:text-xl text-${sectionData.theme}-800 font-semibold bg-${sectionData.theme}-50 bg-opacity-60 p-4 md:p-5 rounded-2xl shadow-sm inline-block w-full">${sectionData.description}</p></div>`; }
+                html += `<div id="${sectionData.id}-classify-container">`;
+                html += this.renderClassifyInner(sectionData);
+                html += `</div>`;
+                
+                html += `<div id="section-result-area-${sectionData.id}">`;
+                const progress = this.state.progress[sectionData.id];
+                const isComplete = progress.answered === progress.total;
+                if (isComplete) { html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${sectionData.theme}-200 rounded-2xl shadow-sm text-center max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${sectionData.theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`; }
+                html += '</div>';
+                html += `<div id="section-footer-area-${sectionData.id}" class="w-full">` + this.renderSectionFooterControls(sectionData.id, isComplete) + `</div></div>`;
+                return html;
+            },
+            renderClassifyInner(sectionData) {
                 const sectionId = sectionData.id;
                 const theme = sectionData.theme;
                 const state = this.state.sectionData[sectionId];
@@ -1220,9 +1272,6 @@
                 });
 
                 html += `<div class="flex flex-col items-center w-full gap-6 ${sectionFadeClass}">`;
-                if (sectionData.description) {
-                    html += `<div class="text-center w-full"><p class="text-lg md:text-xl text-${theme}-800 font-semibold bg-${theme}-50 bg-opacity-60 p-4 md:p-5 rounded-2xl shadow-sm">${sectionData.description}</p></div>`;
-                }
 
                 html += `<div class="relative w-full min-h-[15rem] transition-all duration-500 ease-in-out bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-start pt-8 md:pt-12 px-4 pb-8 md:px-6">`;
 
@@ -1252,12 +1301,12 @@
                     html += `<div class="w-full flex-grow flex flex-col items-center justify-center"><div class="text-3xl md:text-4xl font-bold text-emerald-500 flex flex-col items-center gap-4 fade-in py-6"><span class="text-6xl">🎉</span><span>اكتملت الصناديق بنجاح!</span></div></div>`;
                 }
                 html += `</div><div class="w-full grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">${glassyTraysHTML}</div></div>`;
-                if (isComplete) {
-                    const progress = this.state.progress[sectionId];
-                    html += `<div class="mt-12 p-8 md:p-10 bg-white border-2 border-${theme}-200 rounded-2xl shadow-sm text-center smooth-expand max-w-2xl mx-auto w-full"><h3 class="text-2xl md:text-3xl font-semibold text-slate-700 mb-6">نتيجتك في قسم (${sectionData.title})</h3><div class="text-4xl md:text-5xl font-bold text-${theme}-600 flex items-center justify-center gap-3"><span>${toArabicNum(progress.score)}</span><span class="text-2xl md:text-3xl text-slate-400 font-medium mt-1">من</span><span>${toArabicNum(progress.total)}</span></div></div>`;
-                }
-                html += `<div id="section-footer-area-${sectionId}" class="w-full">` + this.renderSectionFooterControls(sectionId, isComplete) + `</div>`;
                 return html;
+            },
+            updateClassifyPartial(sectionId) {
+                const container = document.getElementById(`${sectionId}-classify-container`);
+                const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
+                if (container) container.innerHTML = this.renderClassifyInner(sectionDef);
             },
 
             // --- دالة عرض مسك الختام (الرسالة الذهبية تظهر مباشرة) ---
@@ -1281,9 +1330,9 @@
 
                         <!-- 1. اقتباس الدرس -->
                         <div class="mb-10 relative">
-                            <div class="bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-100 relative">
+                            <div class="bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-100 relative text-center">
                                 <span class="absolute -top-6 right-4 text-5xl text-slate-300 font-bold leading-none select-none pointer-events-none">"</span>
-                                <h4 class="text-slate-500 font-bold text-sm md:text-base mb-4 uppercase tracking-wider flex items-center gap-2">
+                                <h4 class="text-slate-500 font-bold text-sm md:text-base mb-4 uppercase tracking-wider flex items-center justify-center gap-2">
                                     <span class="bg-slate-200 text-slate-600 px-2 py-1 rounded text-xs">📌</span> اقتباس الدرس
                                 </h4>
                                 <p class="text-xl md:text-2xl font-medium text-slate-800 leading-[2.2]">${sectionData.quote}</p>
@@ -1292,16 +1341,16 @@
                         </div>
 
                         <!-- 2. الخلاصة -->
-                        <div class="mb-10 px-2">
-                            <h4 class="text-slate-500 font-bold text-sm md:text-base mb-3 uppercase tracking-wider flex items-center gap-2">
+                        <div class="mb-10 px-2 text-center">
+                            <h4 class="text-slate-500 font-bold text-sm md:text-base mb-3 uppercase tracking-wider flex items-center justify-center gap-2">
                                 <span class="bg-slate-200 text-slate-600 px-2 py-1 rounded text-xs">💡</span> الخلاصة
                             </h4>
                             <p class="text-lg md:text-xl font-medium text-slate-700 leading-relaxed">${sectionData.summary}</p>
                         </div>
 
                         <!-- 3. سؤال للتأمل -->
-                        <div class="bg-gradient-to-br from-amber-50 to-white rounded-2xl p-6 md:p-8 border border-amber-100 shadow-sm transform transition-transform md:hover:-translate-y-1">
-                            <h4 class="text-amber-600 font-bold text-sm md:text-base mb-3 uppercase tracking-wider flex items-center gap-2">
+                        <div class="bg-gradient-to-br from-amber-50 to-white rounded-2xl p-6 md:p-8 border border-amber-100 shadow-sm transform transition-transform md:hover:-translate-y-1 text-center">
+                            <h4 class="text-amber-600 font-bold text-sm md:text-base mb-3 uppercase tracking-wider flex items-center justify-center gap-2">
                                 <span class="bg-amber-100 text-amber-600 px-2 py-1 rounded text-xs">🤔</span> سؤال للتأمل
                             </h4>
                             <p class="text-lg md:text-xl font-medium text-slate-800 leading-relaxed">${sectionData.question}</p>
@@ -1339,10 +1388,10 @@
                     <p class="text-xl md:text-2xl font-medium text-slate-700 leading-relaxed fade-in px-4 md:px-8">${slide.text}</p>
                     
                     <div class="absolute bottom-6 w-full px-6 flex justify-between items-center left-0">
-                        <button ${state.currentIndex === 0 ? 'disabled class="opacity-0 pointer-events-none"' : `onclick="App.handleStoryNav('${sectionId}', -1)" class="w-12 h-12 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 md:hover:bg-slate-200 transition-colors active:scale-95"`}>
+                        <button ${state.currentIndex === 0 ? 'disabled' : `onclick="App.handleStoryNav('${sectionId}', -1)"`} class="w-12 h-12 flex items-center justify-center rounded-full transition-colors ${state.currentIndex === 0 ? 'opacity-0 pointer-events-none' : 'bg-slate-100 text-slate-600 md:hover:bg-slate-200 active:scale-95 cursor-pointer'}">
                             <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </button>
-                        <button ${isComplete ? 'disabled class="opacity-0 pointer-events-none"' : `onclick="App.handleStoryNav('${sectionId}', 1)" class="w-12 h-12 flex items-center justify-center rounded-full bg-${theme}-100 text-${theme}-600 md:hover:bg-${theme}-200 transition-colors active:scale-95"`}>
+                        <button ${isComplete ? 'disabled' : `onclick="App.handleStoryNav('${sectionId}', 1)"`} class="w-12 h-12 flex items-center justify-center rounded-full transition-colors ${isComplete ? 'opacity-0 pointer-events-none' : `bg-${theme}-100 text-${theme}-600 md:hover:bg-${theme}-200 active:scale-95 cursor-pointer`}">
                             <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                         </button>
                     </div>
@@ -1599,7 +1648,7 @@
                 }
             },
 
-            // --- دوال التحكم المحدثة الخالية من DOM Redraws لزر التلميح ---
+            // --- دوال التحكم الخالية من DOM Redraws ---
             toggleHint(sectionId, idx) {
                 const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
                 if (sectionDef.id === 'intro') return;
@@ -1616,8 +1665,10 @@
                 qState.showHint = !qState.showHint;
                 qState.hintAnimate = qState.showHint;
 
-                if (sectionDef.type === 'flashcards' || sectionDef.type === 'matching') {
-                    this.updateUI(); 
+                if (sectionDef.type === 'flashcards') {
+                    this.updateFlashcardsPartial(sectionId);
+                } else if (sectionDef.type === 'matching') {
+                    this.updateMatchingPartial(sectionId);
                 } else {
                     const hintArea = document.getElementById(`hint-area-${sectionId}-${idx}`);
                     if (hintArea) {
@@ -1811,23 +1862,63 @@
             handleDynamicSortClick(sectionId, optIndex) {
                 const state = this.state.sectionData[sectionId]; if (state.status === 'correct' || state.animatingOut) return;
                 const currentQState = state.questions[state.currentIndex]; const isCorrect = currentQState.options[optIndex].isCorrect;
-                if (isCorrect) { const isFirstAttempt = state.status === 'idle'; this.state.progress[sectionId].answered++; if (isFirstAttempt) { this.state.progress[sectionId].score++; } state.status = 'correct'; state.animatingOut = true; this.updateUI(); setTimeout(() => { state.currentIndex++; state.status = 'idle'; state.animatingOut = false; this.updateUI(); }, 400); } else { state.status = 'incorrect'; this.updateUI(); }
+                if (isCorrect) { 
+                    const isFirstAttempt = state.status === 'idle'; this.state.progress[sectionId].answered++; if (isFirstAttempt) { this.state.progress[sectionId].score++; } 
+                    state.status = 'correct'; state.animatingOut = true; 
+                    this.updateSortPartial(sectionId);
+                    this.updateTabs();
+                    setTimeout(() => { 
+                        state.currentIndex++; state.status = 'idle'; state.animatingOut = false; 
+                        this.updateSortPartial(sectionId);
+                        if (this.state.progress[sectionId].answered === this.state.progress[sectionId].total) {
+                            const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
+                            this.showSectionResult(sectionId, sectionDef, this.state.progress[sectionId]);
+                        }
+                        this.checkFinalEvaluation();
+                    }, 400); 
+                } else { 
+                    state.status = 'incorrect'; 
+                    this.updateSortPartial(sectionId); 
+                }
             },
             handleFlashcardFlip(sectionId) { const state = this.state.sectionData[sectionId]; if (state.animatingOut) return; state.isFlipped = !state.isFlipped; const cardInner = document.getElementById(`flashcard-inner-${sectionId}`); if (cardInner) { if (state.isFlipped) cardInner.classList.add('rotate-y-180'); else cardInner.classList.remove('rotate-y-180'); } },
             handleFlashcardAnswer(sectionId, isCorrect) {
                 const state = this.state.sectionData[sectionId]; if (state.animatingOut) return;
                 this.state.progress[sectionId].answered++; if (isCorrect) this.state.progress[sectionId].score++;
-                state.animatingOut = true; this.updateUI();
-                setTimeout(() => { state.currentIndex++; state.isFlipped = false; state.animatingOut = false; state.showHint = false; state.hintAnimate = false; if (state.currentIndex >= state.cards.length) this.checkFinalEvaluation(); this.updateUI(); }, 400);
+                state.animatingOut = true; 
+                this.updateFlashcardsPartial(sectionId);
+                this.updateTabs();
+                setTimeout(() => { 
+                    state.currentIndex++; state.isFlipped = false; state.animatingOut = false; state.showHint = false; state.hintAnimate = false; 
+                    this.updateFlashcardsPartial(sectionId);
+                    if (state.currentIndex >= state.cards.length) {
+                        const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
+                        this.showSectionResult(sectionId, sectionDef, this.state.progress[sectionId]);
+                        this.checkFinalEvaluation();
+                    }
+                }, 400);
             },
             handleClassifyClick(sectionId, categoryId) {
                 const state = this.state.sectionData[sectionId]; if (state.status === 'correct' || state.animatingOut) return;
                 const currentQState = state.questions[state.currentIndex]; const currentQ = currentQState.originalQuestion; const isCorrect = categoryId === currentQ.categoryId;
                 if (isCorrect) { 
                     const isFirstAttempt = state.status === 'idle'; this.state.progress[sectionId].answered++; if (isFirstAttempt) this.state.progress[sectionId].score++; 
-                    state.status = 'correct'; state.animatingOut = true; this.updateUI(); 
-                    setTimeout(() => { state.placedItems[categoryId].push(currentQ); state.currentIndex++; state.status = 'idle'; state.animatingOut = false; this.updateUI(); }, 400); 
-                } else { state.status = 'incorrect'; this.updateUI(); }
+                    state.status = 'correct'; state.animatingOut = true; 
+                    this.updateClassifyPartial(sectionId);
+                    this.updateTabs();
+                    setTimeout(() => { 
+                        state.placedItems[categoryId].push(currentQ); state.currentIndex++; state.status = 'idle'; state.animatingOut = false; 
+                        this.updateClassifyPartial(sectionId);
+                        if (this.state.progress[sectionId].answered === this.state.progress[sectionId].total) {
+                            const sectionDef = APP_DATA.sections.find(s => s.id === sectionId);
+                            this.showSectionResult(sectionId, sectionDef, this.state.progress[sectionId]);
+                        }
+                        this.checkFinalEvaluation();
+                    }, 400); 
+                } else { 
+                    state.status = 'incorrect'; 
+                    this.updateClassifyPartial(sectionId); 
+                }
             },
             recordProgress(sectionId, isCorrect) { this.state.progress[sectionId].answered++; if (isCorrect) this.state.progress[sectionId].score++; },
             scrollToContent() { requestAnimationFrame(() => { setTimeout(() => { const target = document.getElementById('scroll-target'); if (target) { const stickyTabs = document.getElementById('sticky-tabs-container'); const headerOffset = stickyTabs ? stickyTabs.offsetHeight : 80; const elementPosition = target.getBoundingClientRect().top; const offsetPosition = elementPosition + window.pageYOffset - headerOffset; window.scrollTo({ top: offsetPosition, behavior: 'smooth' }); } }, 30); }); },
